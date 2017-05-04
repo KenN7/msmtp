@@ -78,6 +78,7 @@
 #define ACC_ADD_MISSING_FROM_HEADER     (1LL << 30LL)
 #define ACC_ADD_MISSING_DATE_HEADER     (1LL << 31LL)
 #define ACC_REMOVE_BCC_HEADERS          (1LL << 32LL)
+#define ACC_FULLNAME                    (1LL << 33LL)
 
 typedef struct
 {
@@ -103,6 +104,7 @@ typedef struct
     /* Authentication */
     char *auth_mech;            /* authentication mechanism */
     char *username;             /* username for authentication */
+    char *full_name;
     char *password;             /* password for authentication */
     char *passwordeval;         /* command for password evaluation */
     char *ntlmdomain;           /* domain for NTLM authentication */

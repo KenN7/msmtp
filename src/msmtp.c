@@ -3298,6 +3298,7 @@ int msmtp_cmdline(msmtp_cmdline_conf_t *conf, int argc, char *argv[])
             case 'F':
                 free(conf->full_name);
                 conf->full_name = xstrdup(optarg);
+                print_error(_("-F overides the configuration full_name %s"), optarg);
                 break;
 
             case LONGONLYOPT_KEEPBCC:
@@ -3629,6 +3630,8 @@ void msmtp_print_conf(msmtp_cmdline_conf_t conf, account_t *account)
     }
     printf("user = %s\n",
             account->username ? account->username : _("(not set)"));
+    printf("full_name = %s\n",
+            account->full_name ? account->full_name : _("(not set)"));
     printf("password = %s\n", account->password ? "*" : _("(not set)"));
     printf("passwordeval = %s\n",
             account->passwordeval ? account->passwordeval : _("(not set)"));
@@ -4134,6 +4137,11 @@ int main(int argc, char *argv[])
             {
                 fprintf(prepend_header_tmpfile, "From: %s <%s>\n",
                         conf.full_name, account->from);
+            }
+            else if (account->full_name)
+            {
+                fprintf(prepend_header_tmpfile, "From: %s <%s>\n",
+                        account->full_name, account->from);
             }
             else
             {

@@ -78,6 +78,7 @@ account_t *account_new(const char *conffile, const char *id)
     a->dsn_notify = NULL;
     a->auth_mech = NULL;
     a->username = NULL;
+    a->full_name = NULL;
     a->password = NULL;
     a->passwordeval = NULL;
     a->ntlmdomain = NULL;
@@ -133,6 +134,7 @@ account_t *account_copy(account_t *acc)
         a->dsn_notify = acc->dsn_notify ? xstrdup(acc->dsn_notify) : NULL;
         a->auth_mech = acc->auth_mech ? xstrdup(acc->auth_mech) : NULL;
         a->username = acc->username ? xstrdup(acc->username) : NULL;
+        a->full_name = acc->full_name ? xstrdup(acc->full_name) : NULL;
         a->password = acc->password ? xstrdup(acc->password) : NULL;
         a->passwordeval = acc->passwordeval ? xstrdup(acc->passwordeval) : NULL;
         a->ntlmdomain = acc->ntlmdomain ? xstrdup(acc->ntlmdomain) : NULL;
@@ -208,6 +210,7 @@ void account_free(void *a)
         free(p->maildomain);
         free(p->auth_mech);
         free(p->username);
+        free(p->full_name);
         free(p->password);
         free(p->passwordeval);
         free(p->ntlmdomain);
@@ -561,6 +564,11 @@ void override_account(account_t *acc1, account_t *acc2)
     {
         free(acc1->username);
         acc1->username = acc2->username ? xstrdup(acc2->username) : NULL;
+    }
+    if (acc2->mask & ACC_FULLNAME)
+    {
+        free(acc1->full_name);
+        acc1->full_name = acc2->full_name ? xstrdup(acc2->full_name) : NULL;
     }
     if (acc2->mask & ACC_PASSWORD)
     {
@@ -1346,6 +1354,12 @@ int read_conffile(const char *conffile, FILE *f, list_t **acc_list,
             acc->mask |= ACC_USERNAME;
             free(acc->username);
             acc->username = (*arg == '\0') ? NULL : xstrdup(arg);
+        }
+        else if (strcmp(cmd, "full_name") == 0)
+        {
+            acc->mask |= ACC_FULLNAME;
+            free(acc->full_name);
+            acc->full_name = (*arg == '\0') ? NULL : xstrdup(arg);
         }
         else if (strcmp(cmd, "password") == 0)
         {
